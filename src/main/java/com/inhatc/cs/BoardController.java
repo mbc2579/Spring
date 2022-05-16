@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.inhatc.domain.BoardVO;
+import com.inhatc.domain.Criteria;
+import com.inhatc.domain.PageMaker;
 import com.inhatc.service.BoardService;
 
 @Controller
@@ -53,5 +55,21 @@ public class BoardController {
 	public String modifyPOST(BoardVO board, RedirectAttributes rttr) throws Exception {
 		service.modify(board);
 		return "redirect:/board/listAll";
+	}
+	
+	@RequestMapping(value="/listCri", method=RequestMethod.GET)
+	public void listCri(Criteria cri, Model model) throws Exception {
+		System.out.println("List Criteria Called");
+		model.addAttribute("list", service.listCriteria(cri));
+	}
+	
+	@RequestMapping(value="/listPage", method=RequestMethod.GET)
+	public void listPage(Criteria cri, Model model) throws Exception {
+		System.out.println("List Page Called");
+		model.addAttribute("list", service.listCriteria(cri));
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri);
+		pageMaker.setTotalCount(service.listCountCriteria(cri));
+		model.addAttribute("pageMaker", pageMaker);
 	}
 }
